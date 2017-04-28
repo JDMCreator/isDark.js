@@ -1,0 +1,391 @@
+<!doctype>
+<head>
+<title>Tests</title>
+<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-core/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-core/jasmine.css">
+
+<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine-html.js"></script>
+<script type="text/javascript" src="../isdark-min.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-core/boot.js"></script>
+
+<script type="text/javascript">
+var names={
+aliceblue:0,
+antiquewhite:0,
+aqua:0,
+aquamarine:0,
+azure:0,
+beige:0,
+bisque:0,
+black:1,
+blanchedalmond:0,
+blue:1,
+blueviolet:1,
+brown:1,
+burlywood:0,
+burntsienna:0,
+cadetblue:0,
+chartreuse:0,
+chocolate:1,
+coral:0,
+cornflowerblue:0,
+cornsilk:0,
+crimson:1,
+cyan:0,
+darkblue:1,
+darkcyan:1,
+darkgoldenrod:0,
+darkgray:0,
+darkgreen:1,
+darkgrey:0,
+darkkhaki:0,
+darkmagenta:1,
+darkolivegreen:1,
+darkorange:0,
+darkorchid:1,
+darkred:1,
+darksalmon:0,
+darkseagreen:0,
+darkslateblue:1,
+darkslategray:1,
+darkslategrey:1,
+darkturquoise:0,
+darkviolet:1,
+deeppink:1,
+deepskyblue:0,
+dimgray:1,
+dimgrey:1,
+dodgerblue:1,
+firebrick:1,
+floralwhite:0,
+forestgreen:1,
+fuchsia:1,
+gainsboro:0,
+ghostwhite:0,
+gold:0,
+goldenrod:0,
+gray:0,
+green:1,
+greenyellow:0,
+grey:0,
+honeydew:0,
+hotpink:0,
+indianred:1,
+indigo:1,
+ivory:0,
+khaki:0,
+lavender:0,
+lavenderblush:0,
+lawngreen:0,
+lemonchiffon:0,
+lightblue:0,
+lightcoral:0,
+lightcyan:0,
+lightgoldenrodyellow:0,
+lightgray:0,
+lightgreen:0,
+lightgrey:0,
+lightpink:0,
+lightsalmon:0,
+lightseagreen:0,
+lightskyblue:0,
+lightslategray:0,
+lightslategrey:0,
+lightsteelblue:0,
+lightyellow:0,
+lime:0,
+limegreen:0,
+linen:0,
+magenta:1,
+maroon:1,
+mediumaquamarine:0,
+mediumblue:1,
+mediumorchid:0,
+mediumpurple:0,
+mediumseagreen:0,
+mediumslateblue:1,
+mediumspringgreen:0,
+mediumturquoise:0,
+mediumvioletred:1,
+midnightblue:1,
+mintcream:0,
+mistyrose:0,
+moccasin:0,
+navajowhite:0,
+navy:1,
+oldlace:0,
+olive:1,
+olivedrab:1,
+orange:0,
+orangered:1,
+orchid:0,
+palegoldenrod:0,
+palegreen:0,
+paleturquoise:0,
+palevioletred:0,
+papayawhip:0,
+peachpuff:0,
+peru:0,
+pink:0,
+plum:0,
+powderblue:0,
+purple:1,
+rebeccapurple:1,
+red:1,
+rosybrown:0,
+royalblue:1,
+saddlebrown:1,
+salmon:0,
+sandybrown:0,
+seagreen:1,
+seashell:0,
+sienna:1,
+silver:0,
+skyblue:0,
+slateblue:1,
+slategray:1,
+slategrey:1,
+snow:0,
+springgreen:0,
+steelblue:1,
+tan:0,
+teal:1,
+thistle:0,
+tomato:0,
+transparent:1,
+turquoise:0,
+violet:0,
+wheat:0,
+white:0,
+whitesmoke:0,
+yellow:0,
+yellowgreen:0
+}
+function rgbToHsl(r, g, b){
+	r /= 255, g /= 255, b /= 255;
+	var max = Math.max(r, g, b), min = Math.min(r, g, b);
+	var h, s, l = (max + min) / 2;
+		if (max == min) { h = s = 0; } 
+		else {
+			var d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+			switch (max){
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+			
+			h /= 6;
+		}
+		
+		return [(h*100+0.5)|0, ((s*100+0.5)|0) + '%', ((l*100+0.5)|0) + '%'];
+	}
+function test(what, answer){
+	it("Test with '"+what+"'", function(){
+    		expect(isDark(what)).toBe(answer==1);
+	});
+}
+function rgbToHex(r, g, b) {
+    return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+function shortHex(hex){
+if(hex[0]==hex[1] && hex[2]==hex[3] && hex[4]==hex[5]){
+return [hex[0], hex[2], hex[4]].join("");
+}
+return false;
+}
+function testWithAllFormats(name, r, g, b){
+	describe("All formats for "+(name||"")+" ("+r+","+g+","+b+")", function() {
+	var shouldBe = r * 299 + g * 587 + b * 114 < 128000;
+	if(name){
+    		test(name, shouldBe);
+	}
+    	test("rgb("+r+", "+g+", "+b+")", shouldBe);
+    	test("rgb("+r+" "+g+" "+b+")", shouldBe);
+    	test("rgb("+Math.ceil(r/255*100)+"%, "+Math.ceil(g/255*100)+"%, "+Math.ceil(b/255*100)+"%)", shouldBe);
+    	test("rgb("+Math.ceil(r/255*100)+"% "+Math.ceil(g/255*100)+"% "+Math.ceil(b/255*100)+"%)", shouldBe);
+    	test("rgba("+r+", "+g+", "+b+", 1)", shouldBe);
+    	test("rgba("+r+" "+g+" "+b+", 1)", shouldBe);
+    	test("rgba("+Math.ceil(r/255*100)+"%, "+Math.ceil(g/255*100)+"%, "+Math.ceil(b/255*100)+"%, 100%)", shouldBe);
+    	test("rgba("+Math.ceil(r/255*100)+"% "+Math.ceil(g/255*100)+"% "+Math.ceil(b/255*100)+"% 100%)", shouldBe);
+	var hsl = rgbToHsl(r, g, b);
+    	test("hsl("+hsl[0]+", "+hsl[1]+", "+hsl[2]+")", shouldBe);
+    	test("hsl("+hsl[0]+" "+hsl[1]+" "+hsl[2]+")", shouldBe);
+    	test("hsla("+hsl[0]+", "+hsl[1]+", "+hsl[2]+", 1)", shouldBe);
+    	test("hsla("+hsl[0]+" "+hsl[1]+" "+hsl[2]+", 1)", shouldBe);
+	var hex = rgbToHex(r, g, b);
+    	test(hex, shouldBe);
+    	test("#"+hex, shouldBe);
+    	test(hex+"FF", shouldBe);
+    	test("#"+hex+"FF", shouldBe);
+	var shorthex = shortHex(hex);
+	if(shorthex){
+    	test(shorthex, shouldBe);
+    	test("#"+shorthex, shouldBe);
+    	test(shorthex+"F", shouldBe);
+    	test("#"+shorthex+"F", shouldBe);
+	}
+	});
+}
+  describe("Keywords", function() {
+    for(var i in names){
+	if(names.hasOwnProperty(i)){
+    		it("Test with '"+i+"'", function() {
+    		  expect(isDark(i)).toBe(names[i]==1);
+    		});
+	}
+	}
+});
+describe("Hexadecimal", function() {
+  	it("Test with #000", function() {
+    		expect(isDark("#000")).toBe(true);
+    	});
+  	it("Test with 000", function() {
+    		expect(isDark("000")).toBe(true);
+    	});
+	it("Test with #000000", function() {
+    		expect(isDark("#000000")).toBe(true);
+    	});
+	it("Test with 000000", function() {
+    		expect(isDark("#000000")).toBe(true);
+    	});
+	it("Test with #00000000", function() {
+    		expect(isDark("#00000000")).toBe(true);
+    	});
+	it("Test with 00000000", function() {
+    		expect(isDark("#00000000")).toBe(true);
+    	});
+});
+describe("Hexadecimal", function() {
+  	it("Test with #000", function() {
+    		expect(isDark("#000")).toBe(true);
+    	});
+  	it("Test with 000", function() {
+    		expect(isDark("000")).toBe(true);
+    	});
+	it("Test with #000000", function() {
+    		expect(isDark("#000000")).toBe(true);
+    	});
+	it("Test with 000000", function() {
+    		expect(isDark("#000000")).toBe(true);
+    	});
+	it("Test with #00000000", function() {
+    		expect(isDark("#00000000")).toBe(true);
+    	});
+	it("Test with 00000000", function() {
+    		expect(isDark("#00000000")).toBe(true);
+    	});
+});
+describe("rgb", function() {
+  	it("Test with 'rgb(0,0,139)' (darkblue)", function() {
+    		expect(isDark("rgb(0,0,139)")).toBe(true);
+    	});
+  	it("Test with 'rgb(0, 0, 139)' (darkblue)", function() {
+    		expect(isDark("rgb(0, 0, 139)")).toBe(true);
+    	});
+  	it("Test with 'rgb(0 0 139)' (darkblue)", function() {
+    		expect(isDark("rgb(0 0 139)")).toBe(true);
+    	});
+  	it("Test with 'rgb(0%,0%,54.5%)' (darkblue)", function() {
+    		expect(isDark("rgb(0%,0%,54.5%)")).toBe(true);
+    	});
+  	it("Test with 'rgb(0%, 0%, 54.5%)' (darkblue)", function() {
+    		expect(isDark("rgb(0%, 0%, 54.5%)")).toBe(true);
+    	});
+  	it("Test with 'rgb(0% 0% 54.5%)' (darkblue)", function() {
+    		expect(isDark("rgb(0% 0% 54.5%)")).toBe(true);
+    	});
+  	it("Test with 'rgb(255, 255, 255)' (white)", function() {
+    		expect(isDark("rgb(255, 255, 255)")).toBe(false);
+    	});
+  	it("Test with 'rgb(100% 100% 100%)' (white)", function() {
+    		expect(isDark("rgb(100% 100% 100%)")).toBe(false);
+    	});
+});
+describe("rgba", function() {
+  	it("Test with 'rgba(0,0,139,1)' (darkblue)", function() {
+    		expect(isDark("rgba(0,0,139,1)")).toBe(true);
+    	});
+  	it("Test with 'rgba(0, 0, 139, 1)' (darkblue)", function() {
+    		expect(isDark("rgba(0, 0, 139, 1)")).toBe(true);
+    	});
+  	it("Test with 'rgba(0 0 139 1)' (darkblue)", function() {
+    		expect(isDark("rgba(0 0 139 1)")).toBe(true);
+    	});
+  	it("Test with 'rgba(0%,0%,54.5%,100%)' (darkblue)", function() {
+    		expect(isDark("rgba(0%,0%,54.5%,100%)")).toBe(true);
+    	});
+  	it("Test with 'rgba(0%, 0%, 54.5%, 100%)' (darkblue)", function() {
+    		expect(isDark("rgba(0%, 0%, 54.5%, 100%)")).toBe(true);
+    	});
+  	it("Test with 'rgba(0% 0% 54.5% 100%)' (darkblue)", function() {
+    		expect(isDark("rgba(0% 0% 54.5% 100%)")).toBe(true);
+    	});
+  	it("Test with 'rgba(255, 255, 255, 1)' (white)", function() {
+    		expect(isDark("rgba(255, 255, 255, 1)")).toBe(false);
+    	});
+  	it("Test with 'rgba(100% 100% 100% 100%)' (white)", function() {
+    		expect(isDark("rgba(100% 100% 100% 100%)")).toBe(false);
+    	});
+});
+describe("All formats for red", function() {
+  	it("Test with 'red'", function() {
+    		expect(isDark("red")).toBe(true);
+    	});
+  	it("Test with '#f00'", function() {
+    		expect(isDark("#f00")).toBe(true);
+    	});
+  	it("Test with '#f00f'", function() {
+    		expect(isDark("#f00f")).toBe(true);
+    	});
+  	it("Test with '#ff0000'", function() {
+    		expect(isDark("#ff0000")).toBe(true);
+    	});
+  	it("Test with 'rgb(255,0,0)'", function() {
+    		expect(isDark("rgb(255,0,0)")).toBe(true);
+    	});
+  	it("Test with 'rgb(255 0 0)'", function() {
+    		expect(isDark("rgb(255 0 0)")).toBe(true);
+    	});
+  	it("Test with 'rgb(100%, 0%, 0%)'", function() {
+    		expect(isDark("rgb(100%, 0%, 0%)")).toBe(true);
+    	});
+  	it("Test with 'rgb(100% 0% 0%)'", function() {
+    		expect(isDark("rgb(100% 0% 0%)")).toBe(true);
+    	});
+  	it("Test with 'rgba(255,0,0,1)'", function() {
+    		expect(isDark("rgba(255,0,0)")).toBe(true);
+    	});
+  	it("Test with 'rgba(255 0 0 1)'", function() {
+    		expect(isDark("rgba(255 0 0 1)")).toBe(true);
+    	});
+  	it("Test with 'rgba(100%, 0%, 0%, 100%)'", function() {
+    		expect(isDark("rgba(100%, 0%, 0%, 100%)")).toBe(true);
+    	});
+  	it("Test with 'rgba(100% 0% 0% 100%)'", function() {
+    		expect(isDark("rgba(100% 0% 0% 100%)")).toBe(true);
+    	});
+  	it("Test with 'hsl(0, 100%, 50%)'", function() {
+    		expect(isDark("hsl(0, 100%, 50%)")).toBe(true);
+    	});
+  	it("Test with 'hsl(0 100% 50%)'", function() {
+    		expect(isDark("hsl(0 100% 50%)")).toBe(true);
+    	});
+  	it("Test with 'hsla(0, 100%, 50%, 1)'", function() {
+    		expect(isDark("hsl(0, 100%, 50%, 1)")).toBe(true);
+    	});
+  	it("Test with 'hsla(0 100% 50% 1)'", function() {
+    		expect(isDark("hsl(0 100% 50% 1)")).toBe(true);
+    	});
+});
+testWithAllFormats("black", 0, 0, 0);
+testWithAllFormats("grey", 128, 128, 128);
+testWithAllFormats("khaki", 240,230,140);
+testWithAllFormats("mediumvioletred", 199,21,133);
+</script>
+</head>
+<body>
+</body>
+</html>
