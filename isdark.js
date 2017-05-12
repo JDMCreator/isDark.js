@@ -2,14 +2,14 @@ this.isDark = function(color) {
 	color = color.trim()
 		.toLowerCase();
 	var length = color.length,
-		firstChar = color[0], _255=255;
+		firstChar = color[0], _255=255,regEx=/\(([^\)]+)/,regExStr=/[,\s]+/;
 	if (/(^#?[a-f\d]+$)|\d/.test(color)){
 		if (firstChar == "h") {
-			var h = /(\d+)[,\s]+(\d+)%[,\s]+(\d+)%/.exec(color),
-				s = h[2] / 100,
-				l = h[3] / 100;
+			var h = regEx.exec(color)[1].replace(/[^\s,.\d]/g,"").split(regExStr);
+				var s = h[1] / 100,
+				l = h[2] / 100;
+				h = parseInt(h[0],10) / 100;
 
-			h = h[1] / 100;
 			function hue2rgb(p, q, t) {
 				if (t < 0) t += 1;
 				if (t > 1) t -= 1;
@@ -28,13 +28,9 @@ this.isDark = function(color) {
 		}
 		else if (firstChar == "r") {
 			//rgb or rgba
-			color = /\(([^\)]+)/.exec(color.replace(/([\d.]+)%/g,
-				function(a, b) {
-					return b * 2.55
-				}))[1].split(/[,\s]+/);
+			color = regEx.exec(color.replace(/%/g,"*2.55"))[1].split(regExStr).map(eval)
 		} else {
-			color = [(z = +("0x"+color.replace("#", "")
-					.replace(length < 6 && /./g, '$&$&').substring(0,6)) >> 16 & _255,
+			color = [(z = +("0x"+color.replace(length < 6 && /\w/g, '$&$&').substr(+(firstChar=="#"),6))) >> 16 & _255,
 				z >> 8 & _255,
 				z & _255
 			];
@@ -47,5 +43,5 @@ this.isDark = function(color) {
 	   and manual calculations. Each dark color is assigned a unique 2-ASCII-characters code generated from its name. */
 	return !("bIb=b*bRcLcRdYdad{dcdRdgdHd*dndKdofifGf(gSi{iimum>mom;m\\mnnmoMoWo{p,r.r?rUscs#s8sUsWs{t*th".indexOf(
 		firstChar + String.fromCharCode((color.charCodeAt(628 % length) * length) % 91 + 33)
-	) % 2)
+	) % 2);
 }

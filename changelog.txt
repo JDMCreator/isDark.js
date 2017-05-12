@@ -1,3 +1,11 @@
+Version 1.1
+
+/ Reduced size for several parts of the function
+# Allow "deg" unit in HSL
+# Allow decimal numbers in HSL
+# Fixed a bug for short hexadecimal
++ 558 bytes gzipped // 762 bytes minified
+
 Version 1.0
 
 + Original release
