@@ -2,22 +2,28 @@ this.isDark = function(color) {
 	color = color.trim()
 		.toLowerCase();
 	var length = color.length,
-		firstChar = color[0], _255=255,regEx=/\(([^\)]+)/,regExStr=/[,\s]+/;
+		firstChar = color[0], _255=255,h=[],s, l=/[\d.*]+/g;
 	if (/(^#?[a-f\d]+$)|\d/.test(color)){
 		if (firstChar == "h") {
-			var h = regEx.exec(color)[1].replace(/[^\s,.\d]/g,"").split(regExStr),
-			    s = h[1] / 100,
-			    l = h[2] / 100,
-			    q = l < 0.5 ? l * (1 + s) : l + s - l * s,
+
+			while(s=l.exec(color)){
+				h.push(s[0])
+			}
+			s=h[1]/100;
+			l=h[2]/100;
+			var q = l < 0.5 ? l * (1 + s) : l + s - l * s,
 			    p = 2 * l - q;
 			    h = h[0] / 100;
 			color = [h+1/3,h,h-1/3].map(function(t,c){
-      				return (((c=q-p,t+=t<0?1:t>1?-1:0)<1/6?p+6*c*t:.5>t?q:t<2/3?p+c*(2/3-t)*6:p)*255)+.5|0;
+      				return (((c=q-p,t+=t<0?1:t>1?-1:0)<1/6?p+6*c*t:.5>t?q:t<2/3?p+c*(2/3-t)*6:p)*_255)+.5|0;
     			});
 		}
 		else if (firstChar == "r") {
 			//rgb or rgba
-			color = regEx.exec(color.replace(/%/g,"*2.55"))[1].split(regExStr).map(eval)
+			while(s=l.exec(color.replace(/%/g,"*2.55"))){
+				h.push(s[0])
+			};
+			color=h.map(eval);
 		} else {
 			color = [(z = "0x"+/\w{6}/.exec(color.replace(length<6&&/./g,'$&$&'))) >> 16 & _255,
 				z >> 8 & _255,

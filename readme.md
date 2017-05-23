@@ -1,6 +1,6 @@
 # isDark.js
 
-**isDark.js** is the smallest code to know if any color is dark or light. 545 bytes gzipped // 731 bytes minified. No dependency and crossbrowser (IE9+). Will be adapted for Node.JS.
+**isDark.js** is the smallest code to know if any color is dark or light. 538 bytes gzipped // 727 bytes minified. No dependency and crossbrowser (IE9+). Will be adapted for Node.JS.
 
 **isDark.js** supports every color :
 
@@ -13,7 +13,7 @@
 
 ### Security
 
-Only uses `isDark` if you trust the origin of the `<Color String>`. To save space, `isDark` uses `eval`.
+Security issues has been solved. Even if the code uses `eval`, it is safe.
 
 ### How to use
 
